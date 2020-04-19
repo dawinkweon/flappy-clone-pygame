@@ -33,7 +33,7 @@ obs.once(Events.GameOver, game_over)
 pipe_container = PipeContainer(obs, WINDOW_WIDTH, WINDOW_HEIGHT, PIPE_WIDTH, PIPE_DISTANCE, PIPE_GAP_HEIGHT)
 pipe_container.initialize_pipes(PIPE_START_POS_X)
 
-flappy_bird = FlappyBird(obs, BIRD_START_POS[0], BIRD_START_POS[1], BIRD_SIZE[0], BIRD_SIZE[1], WINDOW_HEIGHT)
+flappy_bird = FlappyBird(obs, pipe_container, BIRD_START_POS[0], BIRD_START_POS[1], BIRD_SIZE[0], BIRD_SIZE[1], WINDOW_HEIGHT)
 
 while True:
     clear_display(game_display)
@@ -46,6 +46,12 @@ while True:
 
     obs.trigger(Events.Tick)
     obs.trigger(Events.Draw, pygame, game_display)
+
+    # End the game when bird collides with the pipes
+    pipes_as_rect_list = pipe_container.get_pipes_as_rect_list()
+    flappy_bird_rect = flappy_bird.get_rect()
+    if flappy_bird_rect.collidelist(pipes_as_rect_list) != -1:
+        obs.trigger(Events.GameOver)
 
     pygame.display.flip()
     clock.tick(60)

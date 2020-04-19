@@ -1,6 +1,7 @@
 import random
 from Pipe import Pipe
 from Drawable import Drawable
+import pygame
 
 class PipeContainer(Drawable):
     # Each pipe has a top and bottom part
@@ -16,6 +17,7 @@ class PipeContainer(Drawable):
         self.min_pipe_height = int(max_height * 0.1)
         self.max_num_pipes = int(self.max_width / (self.pipe_width + self.pipe_distance)) * PipeContainer.NUM_PIPE_PARTS + 2 # Add 2 for some leeway
         self.pipes = []
+        self.can_move = True
 
     def initialize_pipes(self, pipe_start_pos_x):
         first_pipe_index = int(pipe_start_pos_x / (self.pipe_width + self.pipe_distance))
@@ -39,6 +41,9 @@ class PipeContainer(Drawable):
         self.create_pipe(new_pipe_x)
 
     def tick(self):
+        if not self.can_move:
+            return
+
         for pipe in self.pipes:
             pipe.move_left()
             if pipe.x <= 0:
@@ -53,5 +58,16 @@ class PipeContainer(Drawable):
         for pipe in self.pipes:
             pygame.draw.rect(game_display, Pipe.DrawColor, pygame.Rect(pipe.x, pipe.y, pipe.width, pipe.height))
 
+    def game_over(self):
+        self.can_move = False
+
     def error_handler(self, message):
         print("Pipe container recieved message: ")
+
+    def get_pipes_as_rect_list(self):
+        def to_rect(pipe):
+            return pygame.Rect(pipe.x, pipe.y, pipe.width, pipe.height)
+        rect_list = []
+        for pipe in self.pipes:
+            rect_list.append(to_rect(pipe))
+        return rect_list

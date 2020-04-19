@@ -7,6 +7,7 @@ class Drawable:
         obs.on(Events.Tick, self.tick)
         obs.on(Events.Draw, self.draw)
         obs.on(Events.KeyDown, self.key_down)
+        obs.on(Events.GameOver, self.game_over)
 
     def tick(self):
         pass
@@ -15,4 +16,7 @@ class Drawable:
         pass
 
     def key_down(self, key_code):
+        pass
+
+    def game_over(self):
         pass
