@@ -1,10 +1,13 @@
 import random
 from Pipe import Pipe
+from Drawable import Drawable
 
-class PipeContainer:
+class PipeContainer(Drawable):
     # Each pipe has a top and bottom part
     NUM_PIPE_PARTS = 2 
-    def __init__(self, max_width, max_height, pipe_width, pipe_distance, pipe_gap_height):
+    def __init__(self, obs, pygame, game_display, max_width, max_height, pipe_width, pipe_distance, pipe_gap_height):
+        super().__init__(obs, pygame, game_display)
+        self.obs = obs
         self.max_width = max_width
         self.max_height = max_height
         self.pipe_width = pipe_width
@@ -46,6 +49,9 @@ class PipeContainer:
         while(len(self.pipes) < self.max_num_pipes):
             self.add_pipe_from_end()
 
-    def draw(self, pygame, game_display):    
+    def draw(self):    
         for pipe in self.pipes:
-            pygame.draw.rect(game_display, Pipe.DrawColor, pygame.Rect(pipe.x, pipe.y, pipe.width, pipe.height))
+            self.pygame.draw.rect(self.game_display, Pipe.DrawColor, self.pygame.Rect(pipe.x, pipe.y, pipe.width, pipe.height))
+
+    def error_handler(self, message):
+        print("Pipe container recieved message: ")

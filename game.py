@@ -2,6 +2,8 @@ import pygame
 from pygame import display
 from PipeContainer import PipeContainer
 from Pipe import Pipe
+from observable import Observable
+from Events import Events
 
 WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 500
@@ -16,11 +18,12 @@ class Colors:
 def clear_display(game_display):
     game_display.fill(Colors.BackgroundColor)
     
+obs = Observable()
 pygame.init()
 clock = pygame.time.Clock()
 game_display = display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
 
-pipe_container = PipeContainer(WINDOW_WIDTH, WINDOW_HEIGHT, PIPE_WIDTH, PIPE_DISTANCE, PIPE_GAP_HEIGHT)
+pipe_container = PipeContainer(obs, pygame, game_display, WINDOW_WIDTH, WINDOW_HEIGHT, PIPE_WIDTH, PIPE_DISTANCE, PIPE_GAP_HEIGHT)
 pipe_container.initialize_pipes(PIPE_START_POS_X)
 
 while True:
@@ -30,8 +33,8 @@ while True:
         if event.type== pygame.QUIT:
             raise SystemExit
 
-    pipe_container.tick()
-    pipe_container.draw(pygame, game_display)
+    obs.trigger(Events.Tick)
+    obs.trigger(Events.Draw)
 
     pygame.display.flip()
     clock.tick(60)
