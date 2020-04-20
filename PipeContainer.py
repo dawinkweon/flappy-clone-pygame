@@ -7,23 +7,28 @@ from AssetFactory import AssetFactory, PipeDirection
 class PipeContainer(Drawable):
     # Each pipe has a top and bottom part
     NUM_PIPE_PARTS = 2 
-    def __init__(self, obs, asset_factory, max_width, max_height, pipe_width, pipe_distance, pipe_gap_height, map_move_speed):
+    def __init__(self, obs, asset_factory, game_configuration):
         super().__init__(obs)
         self.obs = obs
         self.asset_factory = asset_factory
-        self.max_width = max_width
-        self.max_height = max_height
-        self.pipe_width = pipe_width
-        self.pipe_distance = pipe_distance
-        self.pipe_gap_height = pipe_gap_height
-        self.map_move_speed = map_move_speed
-        self.min_pipe_height = int(max_height * 0.1)
-        self.max_num_pipes = int(self.max_width / (self.pipe_width + self.pipe_distance)) * PipeContainer.NUM_PIPE_PARTS + 2 # Add 2 for some leeway
+        self.game_configuration = game_configuration
+        self.max_width = self.game_configuration.window_width
+        self.max_height = self.game_configuration.window_height
+        self.pipe_width = self.game_configuration.pipe_width
+        self.pipe_distance = self.game_configuration.pipe_distance
+        self.pipe_gap_height = self.game_configuration.pipe_gap_height
+        self.map_move_speed = self.game_configuration.map_move_speed
+        self.pipe_start_pos = self.game_configuration.pipe_start_pos
         self.pipes = []
         self.can_move = True
 
-    def initialize_pipes(self, pipe_start_pos_x):
-        first_pipe_index = int(pipe_start_pos_x / (self.pipe_width + self.pipe_distance))
+        self.min_pipe_height = int(self.max_height * 0.1)
+        self.max_num_pipes = int(self.max_width / (self.pipe_width + self.pipe_distance)) * PipeContainer.NUM_PIPE_PARTS + 2 # Add 2 for some leeway
+        
+        self.initialize_pipes()
+
+    def initialize_pipes(self):
+        first_pipe_index = int(self.pipe_start_pos / (self.pipe_width + self.pipe_distance))
 
         for i in range(first_pipe_index, self.max_num_pipes):
             pipe_x = i * (self.pipe_width + self.pipe_distance)
@@ -44,7 +49,7 @@ class PipeContainer(Drawable):
         return Pipe(x, y, width, height, pipe_img)
 
     def add_pipe_from_end(self):
-        last_pipe = self.pipes[len(self.pipes) - 1]
+        last_pipe = self.pipes[-1]
         new_pipe_x = last_pipe.x + self.pipe_width + self.pipe_distance
         self.create_pipe(new_pipe_x)
 

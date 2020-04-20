@@ -3,15 +3,14 @@ import pygame
 from Events import Events
 
 class FlappyBird(Drawable):
-    def __init__(self, obs, pipe_container, x, y, width, height, img, y_bounds):
+    def __init__(self, obs, game_configuration, img):
         super().__init__(obs)
-        self.pipe_container = pipe_container
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+        self.x = game_configuration.bird_start_pos[0]
+        self.y = game_configuration.bird_start_pos[1]
+        self.width = game_configuration.bird_size[0]
+        self.height = game_configuration.bird_size[1]
+        self.y_bounds = game_configuration.window_height
         self.img = img
-        self.y_bounds = y_bounds
         self.velocity = 0
         self.acceleration = 1
         self.can_flap = True
