@@ -2,13 +2,15 @@ import random
 from Pipe import Pipe
 from Drawable import Drawable
 import pygame
+from AssetFactory import AssetFactory, PipeDirection
 
 class PipeContainer(Drawable):
     # Each pipe has a top and bottom part
     NUM_PIPE_PARTS = 2 
-    def __init__(self, obs, max_width, max_height, pipe_width, pipe_distance, pipe_gap_height):
+    def __init__(self, obs, asset_factory, max_width, max_height, pipe_width, pipe_distance, pipe_gap_height):
         super().__init__(obs)
         self.obs = obs
+        self.asset_factory = asset_factory
         self.max_width = max_width
         self.max_height = max_height
         self.pipe_width = pipe_width
@@ -29,11 +31,16 @@ class PipeContainer(Drawable):
     def create_pipe(self, pipe_x):
         random_pos = random.randint(self.min_pipe_height, self.max_height - self.min_pipe_height - self.pipe_gap_height)
         top_height = self.max_height - (random_pos + self.pipe_gap_height)
-        top_pipe = Pipe(pipe_x, 0, self.pipe_width, top_height) 
-        bottom_pipe = Pipe(pipe_x, self.max_height - random_pos, self.pipe_width, random_pos)
         
+        top_pipe = self.create_pipe_part(pipe_x, 0, self.pipe_width, top_height, PipeDirection.Down)
+        bottom_pipe = self.create_pipe_part(pipe_x, self.max_height - random_pos, self.pipe_width, random_pos, PipeDirection.Up)
+
         self.pipes.append(top_pipe)
         self.pipes.append(bottom_pipe)
+        
+    def create_pipe_part(self, x, y, width, height, pipe_direction):
+        pipe_img = self.asset_factory.create_pipe_image(width, height, pipe_direction)
+        return Pipe(x, y, width, height, pipe_img)
 
     def add_pipe_from_end(self):
         last_pipe = self.pipes[len(self.pipes) - 1]
@@ -56,7 +63,7 @@ class PipeContainer(Drawable):
 
     def draw(self, pygame, game_display):    
         for pipe in self.pipes:
-            pygame.draw.rect(game_display, Pipe.DrawColor, pygame.Rect(pipe.x, pipe.y, pipe.width, pipe.height))
+            game_display.blit(pipe.img, (pipe.x, pipe.y))
 
     def game_over(self):
         self.can_move = False

@@ -3,14 +3,14 @@ import pygame
 from Events import Events
 
 class FlappyBird(Drawable):
-    DrawColor = (133,133,133)
-    def __init__(self, obs, pipe_container, x, y, width, height, y_bounds):
+    def __init__(self, obs, pipe_container, x, y, width, height, img, y_bounds):
         super().__init__(obs)
         self.pipe_container = pipe_container
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.img = img
         self.y_bounds = y_bounds
         self.velocity = 0
         self.acceleration = 1
@@ -43,7 +43,7 @@ class FlappyBird(Drawable):
             self.do_flap()
 
     def draw(self, pygame, game_display):
-        pygame.draw.rect(game_display, FlappyBird.DrawColor, pygame.Rect(self.x, self.y, self.width, self.height))
+        game_display.blit(self.img, (self.x, self.y))
 
     def game_over(self):
         self.can_flap = False

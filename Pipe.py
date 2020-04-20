@@ -1,10 +1,10 @@
 class Pipe:
-    DrawColor = (255,255,255)
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, img):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.img = img
 
     def move_left(self):
         self.x -= 1
