@@ -9,12 +9,13 @@ from AssetFactory import AssetFactory
 
 WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 500
-PIPE_START_POS_X = 700
-PIPE_WIDTH = 50
+PIPE_START_POS_X = 300
+PIPE_WIDTH = 32
 PIPE_DISTANCE = 300
 PIPE_GAP_HEIGHT = 150
 BIRD_START_POS = (150,0)
 BIRD_SIZE = (50,35)
+MAP_MOVE_SPEED = 2.5
 
 class Colors:
     BackgroundColor = (255,255,255)
@@ -33,7 +34,7 @@ obs.once(Events.GameOver, game_over)
 
 asset_factory = AssetFactory()
 
-pipe_container = PipeContainer(obs, asset_factory, WINDOW_WIDTH, WINDOW_HEIGHT, PIPE_WIDTH, PIPE_DISTANCE, PIPE_GAP_HEIGHT)
+pipe_container = PipeContainer(obs, asset_factory, WINDOW_WIDTH, WINDOW_HEIGHT, PIPE_WIDTH, PIPE_DISTANCE, PIPE_GAP_HEIGHT, MAP_MOVE_SPEED)
 pipe_container.initialize_pipes(PIPE_START_POS_X)
 
 flappy_bird_img = asset_factory.create_flappy_bird_image(BIRD_SIZE[0], BIRD_SIZE[1])

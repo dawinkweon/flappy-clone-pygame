@@ -7,7 +7,7 @@ from AssetFactory import AssetFactory, PipeDirection
 class PipeContainer(Drawable):
     # Each pipe has a top and bottom part
     NUM_PIPE_PARTS = 2 
-    def __init__(self, obs, asset_factory, max_width, max_height, pipe_width, pipe_distance, pipe_gap_height):
+    def __init__(self, obs, asset_factory, max_width, max_height, pipe_width, pipe_distance, pipe_gap_height, map_move_speed):
         super().__init__(obs)
         self.obs = obs
         self.asset_factory = asset_factory
@@ -16,6 +16,7 @@ class PipeContainer(Drawable):
         self.pipe_width = pipe_width
         self.pipe_distance = pipe_distance
         self.pipe_gap_height = pipe_gap_height
+        self.map_move_speed = map_move_speed
         self.min_pipe_height = int(max_height * 0.1)
         self.max_num_pipes = int(self.max_width / (self.pipe_width + self.pipe_distance)) * PipeContainer.NUM_PIPE_PARTS + 2 # Add 2 for some leeway
         self.pipes = []
@@ -52,7 +53,7 @@ class PipeContainer(Drawable):
             return
 
         for pipe in self.pipes:
-            pipe.move_left()
+            pipe.move_left(self.map_move_speed)
             if pipe.x <= 0:
                 self.pipes.remove(pipe)
 
