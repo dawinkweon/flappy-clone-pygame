@@ -1,13 +1,19 @@
-class Pipe:
-    def __init__(self, x, y, width, height, img):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.img = img
+from pygame.sprite import Sprite
 
-    def move_left(self, move_amount):
-        self.x -= move_amount
+class Pipe(Sprite):
+    def __init__(self, x, y, image, move_speed):
+        Sprite.__init__(self)
+        self.move_speed = move_speed
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-    def __str__(self):
-        return ("Pipe with x: %s, y: %s, width: %s, height: %s" % (str(self.x), str(self.y), str(self.width), str(self.height)))
+    def set_move_speed(self, move_speed):
+        self.move_speed = move_speed
+
+    def update(self):
+        self.rect.x -= self.move_speed
+
+        if self.rect.x <= 0:
+            self.kill()

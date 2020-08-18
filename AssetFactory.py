@@ -15,12 +15,13 @@ class AssetFactory:
         self.pipe_up_base = image.load(pipe_img_path)
         self.flappy_bird = image.load(flappy_bird_img_path)
         
-    def create_pipe_image(self, width, height, pipe_direction):
-        chopped_img = self.pipe_up_base.subsurface(Rect(0, 0, width, height))
+    def create_pipe_image(self, size, pipe_direction):
+        pipe = self.pipe_up_base.subsurface(Rect(0, 0, size[0], size[1]))
 
         if pipe_direction == PipeDirection.Down:
-            return transform.flip(chopped_img, False, True)
-        return chopped_img
+            pipe = transform.flip(pipe, False, True)
+        
+        return pipe
 
-    def create_flappy_bird_image(self, width, height):
-        return transform.scale(self.flappy_bird, (width, height))
+    def create_flappy_bird_image(self, size):
+        return transform.scale(self.flappy_bird, size)
