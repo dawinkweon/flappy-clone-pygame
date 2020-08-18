@@ -30,7 +30,7 @@ bird_start_pos = (150,0)
 bird_size = (50,35)
 
 flappy_bird_img = asset_factory.create_flappy_bird_image(bird_size)
-flappy_bird = FlappyBird(bird_start_pos, flappy_bird_img, game_configuration)
+flappy_bird = FlappyBird(bird_start_pos, flappy_bird_img)
 flappy_bird_group = GroupSingle(flappy_bird)
 
 def handle_key_down(key):
@@ -59,6 +59,7 @@ while True:
     collided_sprite = sprite.spritecollideany(flappy_bird, pipe_container.pipe_group)
     if collided_sprite is not None:
         flappy_bird.can_flap = False
+        flappy_bird.velocity = 10
         pipe_container.can_move = False
 
     # Bird stops moving when hitting bottom of screen
