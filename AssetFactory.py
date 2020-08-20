@@ -11,17 +11,16 @@ class PipeDirection:
 
 class AssetFactory:
     def __init__(self):
-        print(pipe_img_path)
-        self.pipe_up_base = image.load(pipe_img_path)
-        self.flappy_bird = image.load(flappy_bird_img_path)
+        self._pipe_up_img_base = image.load(pipe_img_path)
+        self._flappy_bird_img_base = image.load(flappy_bird_img_path)
         
     def create_pipe_image(self, size, pipe_direction):
-        pipe = self.pipe_up_base.subsurface(Rect(0, 0, size[0], size[1]))
+        pipe_img = self._pipe_up_img_base.subsurface(Rect(0, 0, size[0], size[1]))
 
         if pipe_direction == PipeDirection.Down:
-            pipe = transform.flip(pipe, False, True)
+            pipe_img = transform.flip(pipe_img, False, True)
         
-        return pipe
+        return pipe_img
 
     def create_flappy_bird_image(self, size):
-        return transform.scale(self.flappy_bird, size)
+        return transform.scale(self._flappy_bird_img_base, size)

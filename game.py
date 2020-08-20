@@ -1,19 +1,17 @@
 import pygame
 from pygame import display
-from PipeContainer import PipeContainer
+from PipeGenerator import PipeGenerator
 from Pipe import Pipe
 from Events import Events
 from FlappyBird import FlappyBird
 from AssetFactory import AssetFactory
 from pygame import sprite
-from pygame.sprite import GroupSingle
+from pygame.sprite import GroupSingle, Group
 from GameConfiguration import GameConfiguration
 
-class Colors:
-    BackgroundColor = (255,255,255)
-
-def clear_display(game_display):
-    game_display.fill(Colors.BackgroundColor)
+BACKGROUND_COLOR = (255,255,255)
+BIRD_START_POS = (150,0)
+BIRD_SIZE = (50,35)
 
 game_configuration = GameConfiguration()
     
@@ -22,51 +20,47 @@ clock = pygame.time.Clock()
 game_display = display.set_mode((game_configuration.window_width, game_configuration.window_height))
 
 asset_factory = AssetFactory()
+pipe_group = Group()
+pipe_generator = PipeGenerator(pipe_group, asset_factory, game_configuration)
 
-pipe_container = PipeContainer(asset_factory, game_configuration)
-
-# Bird
-bird_start_pos = (150,0)
-bird_size = (50,35)
-
-flappy_bird_img = asset_factory.create_flappy_bird_image(bird_size)
-flappy_bird = FlappyBird(bird_start_pos, flappy_bird_img)
+flappy_bird_img = asset_factory.create_flappy_bird_image(BIRD_SIZE)
+flappy_bird = FlappyBird(BIRD_START_POS, flappy_bird_img)
 flappy_bird_group = GroupSingle(flappy_bird)
-
-def handle_key_down(key):
-    if (key == pygame.K_UP):
-        flappy_bird.do_flap()
         
-def handle_game_over():
-    global pipe_container
-    pipe_container.can_move = False
-
+can_pipe_move = True
 
 while True:
-    clear_display(game_display)
+    # Clear display
+    game_display.fill(BACKGROUND_COLOR)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             raise SystemExit
         elif event.type == pygame.KEYDOWN:
-            handle_key_down(event.key)
+            if (event.key == pygame.K_UP):
+                flappy_bird.do_flap()
 
-    pipe_container.update(game_display)
+    pipe_generator.update()
+
     flappy_bird_group.update()
     flappy_bird_group.draw(game_display)
 
+    if can_pipe_move:
+        pipe_group.update()
+    pipe_group.draw(game_display)
+
     # Game ends when bird collides with pipe
-    collided_sprite = sprite.spritecollideany(flappy_bird, pipe_container.pipe_group)
+    collided_sprite = sprite.spritecollideany(flappy_bird, pipe_group)
     if collided_sprite is not None:
         flappy_bird.can_flap = False
         flappy_bird.velocity = 10
-        pipe_container.can_move = False
+        can_pipe_move = False
 
     # Bird stops moving when hitting bottom of screen
     if flappy_bird.rect.y - flappy_bird.rect.height >= game_configuration.window_height:
         flappy_bird.rect.y = game_configuration.window_height - flappy_bird.rect.height
         flappy_bird.can_move = False
-        pipe_container.can_move = False
+        can_pipe_move = False
 
     pygame.display.flip()
     clock.tick(60)
