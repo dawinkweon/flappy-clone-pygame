@@ -1,17 +1,15 @@
 import pygame
 from pygame import display
 from PipeGenerator import PipeGenerator
-from Pipe import Pipe
-from Events import Events
 from FlappyBird import FlappyBird
 from AssetFactory import AssetFactory
 from pygame import sprite
 from pygame.sprite import GroupSingle, Group
 from GameConfiguration import GameConfiguration
 
-BACKGROUND_COLOR = (255,255,255)
-BIRD_START_POS = (150,0)
-BIRD_SIZE = (50,35)
+BACKGROUND_COLOR = (255, 255, 255)
+BIRD_START_POS = (150, 0)
+BIRD_SIZE = (50, 35)
 
 game_configuration = GameConfiguration()
     
@@ -37,7 +35,7 @@ while True:
         if event.type == pygame.QUIT:
             raise SystemExit
         elif event.type == pygame.KEYDOWN:
-            if (event.key == pygame.K_UP):
+            if event.key == pygame.K_UP:
                 flappy_bird.do_flap()
 
     pipe_generator.update()
