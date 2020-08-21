@@ -52,14 +52,13 @@ while True:
     # Game ends when bird collides with pipe
     collided_sprite = sprite.spritecollideany(flappy_bird, pipe_group)
     if collided_sprite is not None:
-        flappy_bird.can_flap = False
-        flappy_bird.velocity = 10
+        flappy_bird.fall_to_y_pos(game_configuration.window_height)
         can_pipe_move = False
 
-    # Bird stops moving when hitting bottom of screen
-    if flappy_bird.rect.y - flappy_bird.rect.height >= game_configuration.window_height:
-        flappy_bird.rect.y = game_configuration.window_height - flappy_bird.rect.height
-        flappy_bird.can_move = False
+    # Bird stops moving when hitting near bottom of screen
+    bird_death_pos_y = game_configuration.window_height - 20
+    if flappy_bird.rect.bottom >= bird_death_pos_y:
+        flappy_bird.fall_to_y_pos(game_configuration.window_height)
         can_pipe_move = False
 
     pygame.display.flip()
