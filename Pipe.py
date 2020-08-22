@@ -3,7 +3,15 @@ from pygame import Surface
 
 
 class Pipe(Sprite):
+    """ The pipe sprite """
     def __init__(self, x: int, y: int, image: Surface, move_speed: float):
+        """ The constructor
+
+        @param x: The x position
+        @param y: The y position
+        @param image: The pipe image
+        @param move_speed: The horizontal movement speed
+        """
         Sprite.__init__(self)
         self.move_speed = move_speed
         self.image = image
@@ -12,6 +20,7 @@ class Pipe(Sprite):
         self.rect.y = y
 
     def set_move_speed(self, move_speed: float) -> None:
+        """ Sets the movement speed """
         self.move_speed = move_speed
 
     def update(self) -> None:

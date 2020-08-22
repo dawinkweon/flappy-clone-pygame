@@ -1,4 +1,5 @@
-class GameConfiguration:
+class GameSettings:
+    """ The game configuration settings """
     def __init__(self):
         self.window_width = 1000
         self.window_height = 500
