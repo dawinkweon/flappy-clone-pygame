@@ -5,8 +5,8 @@ from pygame import image, transform, Rect, Surface
 from typing import Tuple
 
 dirname = os.path.dirname(__file__)
-pipe_img_path = os.path.join(dirname, r"assets\pipe.png")
-flappy_bird_img_path = os.path.join(dirname, r"assets\flappy-bird.png")
+pipe_img_path = os.path.join(dirname, r"assets/pipe.png")
+flappy_bird_img_path = os.path.join(dirname, r"assets/flappy-bird.png")
 
 
 class PipeOrientation:
@@ -18,6 +18,7 @@ class PipeOrientation:
 class AssetFactory:
     """ A factory class to create pygame images """
     def __init__(self):
+        print(pipe_img_path)
         self._pipe_up_img_base = image.load(pipe_img_path)
         self._flappy_bird_img_base = image.load(flappy_bird_img_path)
 
