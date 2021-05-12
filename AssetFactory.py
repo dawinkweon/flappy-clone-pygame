@@ -5,8 +5,8 @@ from pygame import image, transform, Rect, Surface
 from typing import Tuple
 
 dirname = os.path.dirname(__file__)
-pipe_img_path = os.path.join(dirname, r"assets/pipe.png")
-flappy_bird_img_path = os.path.join(dirname, r"assets/flappy-bird.png")
+pipe_img_path = os.path.join(dirname, "assets", "pipe.png")
+flappy_bird_img_path = os.path.join(dirname, "assets", "flappy-bird.png")
 
 
 class PipeOrientation:
