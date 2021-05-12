@@ -22,9 +22,7 @@ class PipeGap(Sprite):
             return True
         return False
 
-    def move_horizontally(self, x: float):
-        self.rect.x = self.rect.x + x
-
-    def update(self):
+    def update(self, move_x_amount: float):
+        self.rect.x = self.rect.x + move_x_amount
         if self.rect.x <= 0:
             self.kill()

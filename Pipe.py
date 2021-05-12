@@ -17,9 +17,7 @@ class Pipe(Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def move_horizontally(self, x: float):
-        self.rect.x = self.rect.x + x
-
-    def update(self) -> None:
+    def update(self, move_x_amount: float) -> None:
+        self.rect.x = self.rect.x + move_x_amount
         if self.rect.x <= 0:
             self.kill()
