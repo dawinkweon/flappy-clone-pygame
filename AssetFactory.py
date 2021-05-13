@@ -7,6 +7,7 @@ from typing import Tuple
 dirname = os.path.dirname(__file__)
 pipe_img_path = os.path.join(dirname, "assets", "pipe.png")
 flappy_bird_img_path = os.path.join(dirname, "assets", "flappy-bird.png")
+bg_path = os.path.join(dirname, "assets", "bg.png")
 
 
 class PipeOrientation:
@@ -21,6 +22,7 @@ class AssetFactory:
         print(pipe_img_path)
         self._pipe_up_img_base = image.load(pipe_img_path)
         self._flappy_bird_img_base = image.load(flappy_bird_img_path)
+        self._bg_img = image.load(bg_path)
 
     def create_pipe_image(self, size: Tuple[int, int], orientation: PipeOrientation) -> Surface:
         """ Returns a pipe image
@@ -43,3 +45,11 @@ class AssetFactory:
         @return: the flappy bird image
         """
         return transform.scale(self._flappy_bird_img_base, size)
+
+    def create_bg(self, width: int, height: int) -> Surface:
+        """ Returns the game background
+
+        @param size: the size of the background
+        @return: the background image
+        """
+        return self._bg_img

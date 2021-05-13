@@ -31,6 +31,8 @@ flappy_bird_img = asset_factory.create_flappy_bird_image(BIRD_SIZE)
 flappy_bird = FlappyBird(BIRD_START_POS, flappy_bird_img)
 flappy_bird_group = GroupSingle(flappy_bird)
 
+bg_img = asset_factory.create_bg(game_settings.window_width, game_settings.window_height)
+
 def handle_game_over():
     global can_pipe_move
     global is_game_over
@@ -85,7 +87,6 @@ def draw_sprites():
 
 while True:
     # Clear display
-    game_display.fill(BACKGROUND_COLOR)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -98,6 +99,7 @@ while True:
     elif has_bird_passed_pipe():
         increase_score()
 
+    pygame.Surface.blit(game_display, bg_img, [0,0])
     update_sprites()
     draw_sprites()
     pygame.display.flip()
