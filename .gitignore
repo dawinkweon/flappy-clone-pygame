@@ -1,1 +1,59 @@
+# Pygame build process: config.py setup.py
+/Setup
+*.pyc
+/build/
+/src_py/version.py
+
+# Windows prebuilt external libraries
+/prebuilt-x??
+/prebuilt_downloads
+
+# macOS generated files
+.DS_Store
+
+# Sphinx generated files: makeref.py
+/docs/generated
+
+# Emacs temporary files
+*~
+
+# VIM temporary files
+*.swp
+
+# Visual Studio cache/config directory
+.vs/
+
+# Visual Studio Code cache/config directory
+.vscode/
+
+# PyCharm cache/config directory
+.idea/
+
+# mypy
+.mypy_cache/
+
+# Other
+envdev*
+.virtualenv*
+buildconfig/manylinux-build/wheelhouse/
+anenv
+dist
+.vagrant
+*.egg-info/
+*.so
 __pycache__
+
+__pycache__
+
+# Virtualenv
+# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+pip-selfcheck.json
