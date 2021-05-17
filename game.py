@@ -13,94 +13,98 @@ BIRD_START_POS = (150, 0)
 BIRD_SIZE = (50, 35)
 MAP_MOVE_SPEED = -2.5
 
-game_settings = GameSettings()
-score_count = 0
-can_pipe_move = True
-is_game_over = False
+class Game:
+    def __init__(self):
+        self.game_settings = GameSettings()
+        self.score_count = 0
+        self.can_pipe_move = True
+        self.is_game_over = False
 
-pygame.init()
-clock = pygame.time.Clock()
-game_display = display.set_mode((game_settings.window_width, game_settings.window_height))
+        pygame.init()
+        self.clock = pygame.time.Clock()
+        self.game_display = display.set_mode((self.game_settings.window_width, self.game_settings.window_height))
 
-asset_factory = AssetFactory()
-pipe_group = Group()
-pipe_gaps = Group()
-pipe_generator = PipeGenerator(pipe_group, pipe_gaps, asset_factory, game_settings)
+        self.asset_factory = AssetFactory()
+        self.pipe_group = Group()
+        self.pipe_gaps = Group()
+        self.pipe_generator = PipeGenerator(self.pipe_group, self.pipe_gaps, self.asset_factory, self.game_settings)
 
-flappy_bird_img = asset_factory.create_flappy_bird_image(BIRD_SIZE)
-flappy_bird = FlappyBird(BIRD_START_POS, flappy_bird_img)
-flappy_bird_group = GroupSingle(flappy_bird)
+        self.flappy_bird_img = self.asset_factory.create_flappy_bird_image(BIRD_SIZE)
+        self.flappy_bird = FlappyBird(BIRD_START_POS, self.flappy_bird_img)
+        self.flappy_bird_group = GroupSingle(self.flappy_bird)
 
-bg_img = asset_factory.create_bg(game_settings.window_width, game_settings.window_height)
+        self.bg_img = self.asset_factory.create_bg(self.game_settings.window_width, self.game_settings.window_height)
 
-def handle_game_over():
-    global can_pipe_move
-    global is_game_over
+    def start(self):
+        while True:
+            # Clear display
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    raise SystemExit
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                    self.flappy_bird.do_flap()
 
-    if not is_game_over:
-        is_game_over = True
+            if self.is_bird_dead():
+                self.handle_game_over()
+            elif self.has_bird_passed_pipe():
+                self.increase_score()
 
-        flappy_bird.fall_to_y_pos(game_settings.window_height)
-        can_pipe_move = False
-        print("Game over. Final score was: " + str(score_count))
+            pygame.Surface.blit(self.game_display, self.bg_img, [0,0])
+            self.update_sprites()
+            self.draw_sprites()
+            pygame.display.flip()
+            self.clock.tick(60)
 
+    def handle_game_over(self):
+        if not self.is_game_over:
+            self.is_game_over = True
 
-def increase_score():
-    if is_game_over:
-        return
+            self.flappy_bird.fall_to_y_pos(self.game_settings.window_height)
+            self.can_pipe_move = False
+            print("Game over. Final score was: " + str(self.score_count))
 
-    global score_count
-    score_count = score_count + 1
-    print("Score is: " + str(score_count))
+    def increase_score(self):
+        if self.is_game_over:
+            return
 
-def is_bird_dead():
-    # Game ends when bird collides with pipe
-    collided_sprite = sprite.spritecollideany(flappy_bird, pipe_group)
-    if collided_sprite is not None:
-        return True
+        self.score_count = self.score_count + 1
+        print("Score is: " + str(self.score_count))
 
-    # Bird stops moving when hitting near bottom of screen
-    bird_death_pos_y = game_settings.window_height - 20
-    if flappy_bird.rect.bottom >= bird_death_pos_y:
-        return True
+    def is_bird_dead(self):
+        # Game ends when bird collides with pipe
+        collided_sprite = sprite.spritecollideany(self.flappy_bird, self.pipe_group)
+        if collided_sprite is not None:
+            return True
 
-    return False
+        # Bird stops moving when hitting near bottom of screen
+        bird_death_pos_y = self.game_settings.window_height - 20
+        if self.flappy_bird.rect.bottom >= bird_death_pos_y:
+            return True
 
-def has_bird_passed_pipe():
-     # Score increments when bird goes through pipe gap
-    collided_gaps = sprite.spritecollide(flappy_bird, pipe_gaps, False)
-    for collided_gap in collided_gaps:
-        if collided_gap.is_collided_for_first_time():
-            increase_score()
+        return False
 
-def update_sprites():
-    flappy_bird_group.update()
-    pipe_generator.update()
-    if can_pipe_move:
-        pipe_group.update(MAP_MOVE_SPEED)
-        pipe_gaps.update(MAP_MOVE_SPEED)
+    def has_bird_passed_pipe(self):
+        # Score increments when bird goes through pipe gap
+        collided_gaps = sprite.spritecollide(self.flappy_bird, self.pipe_gaps, False)
+        for collided_gap in collided_gaps:
+            if collided_gap.is_collided_for_first_time():
+                self.increase_score()
 
-def draw_sprites():
-    flappy_bird_group.draw(game_display)
-    pipe_group.draw(game_display)
-    pipe_gaps.draw(game_display)
+    def update_sprites(self):
+        self.flappy_bird_group.update()
+        self.pipe_generator.update()
+        if self.can_pipe_move:
+            self.pipe_group.update(MAP_MOVE_SPEED)
+            self.pipe_gaps.update(MAP_MOVE_SPEED)
 
-while True:
-    # Clear display
+    def draw_sprites(self):
+        self.flappy_bird_group.draw(self.game_display)
+        self.pipe_group.draw(self.game_display)
+        self.pipe_gaps.draw(self.game_display)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            raise SystemExit
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-            flappy_bird.do_flap()
+def main():
+    game = Game()
+    game.start()
 
-    if is_bird_dead():
-        handle_game_over()
-    elif has_bird_passed_pipe():
-        increase_score()
-
-    pygame.Surface.blit(game_display, bg_img, [0,0])
-    update_sprites()
-    draw_sprites()
-    pygame.display.flip()
-    clock.tick(60)
+if __name__ == "__main__":
+    main()
