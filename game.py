@@ -6,7 +6,7 @@ from pygame.sprite import GroupSingle, Group
 from GameSettings import GameSettings
 from AssetFactory import AssetFactory
 from PipeGenerator import PipeGenerator
-from FlappyBird import FlappyBird
+from models import FlappyBird
 
 BACKGROUND_COLOR = (255, 255, 255)
 BIRD_START_POS = (150, 0)
@@ -30,7 +30,7 @@ class Game:
         self._pipe_group = Group()
         self._pipe_gaps = Group()
         self._pipe_generator = PipeGenerator(
-            self._pipe_group, self._pipe_gaps, self.asset_factory, self._settings)
+            self.asset_factory, self._settings)
 
         max_mum_pipes = int(self._settings.window_width
                             / (self._settings.pipe_width + self._settings.pipe_distance))
@@ -52,15 +52,26 @@ class Game:
         for i in range(first_pipe_index, self._max_num_pipe_parts):
             pipe_x = i * (self._settings.pipe_width +
                           self._settings.pipe_distance)
-            self._pipe_generator.create_pipe(pipe_x)
+            result = self._pipe_generator.create_pipe(pipe_x)
+            self._pipe_group.add([result.top_pipe, result.bottom_pipe])
+            self._pipe_gaps.add(result.pipe_gap)
 
     def __update_pipes__(self):
         # Create more pipes if there's space
         # Each pipe actually has two parts, top and bottom
-        num_sprites_to_add = self._max_num_pipe_parts - len(self._pipe_group.sprites())
+        num_sprites_to_add = self._max_num_pipe_parts - \
+            len(self._pipe_group.sprites())
         if num_sprites_to_add > 0:
             for _ in range(0, num_sprites_to_add):
-                self._pipe_generator.create_pipe() 
+                self.__create_pipe_from_end__()
+
+    def __create_pipe_from_end__(self):
+        last_pipe = self._pipe_group.sprites()[-1]
+        new_pipe_x = last_pipe.rect.x + \
+            self._settings.pipe_width + self._settings.pipe_distance
+        result = self._pipe_generator.create_pipe(new_pipe_x)
+        self._pipe_group.add([result.top_pipe, result.bottom_pipe])
+        self._pipe_gaps.add(result.pipe_gap)
 
     def start(self):
         while True:
