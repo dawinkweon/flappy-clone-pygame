@@ -24,39 +24,26 @@ class PipeGenerator:
         @param game_settings: the game settings
         """
         self._asset_factory = asset_factory
-        self._game_configuration = game_settings
+        self._settings = game_settings
         self._pipe_group = pipe_group
         self._pipe_gaps = pipe_gaps
 
         self.can_move = True
 
-        self._min_pipe_height = int(self._game_configuration.window_height * 0.1)
-        max_mum_pipes = int(self._game_configuration.window_width
-                            / (self._game_configuration.pipe_width + self._game_configuration.pipe_distance))
-        self._max_num_pipe_parts = max_mum_pipes * PipeGenerator.NUM_PIPE_PARTS
+        self._min_pipe_height = int(self._settings.window_height * 0.1)
 
-        self.__initialize_pipes__()
-
-    def __initialize_pipes__(self) -> None:
-        first_pipe_index = int(self._game_configuration.pipe_start_pos
-                               / (self._game_configuration.pipe_width + self._game_configuration.pipe_distance))
-
-        for i in range(first_pipe_index, self._max_num_pipe_parts):
-            pipe_x = i * (self._game_configuration.pipe_width + self._game_configuration.pipe_distance)
-            self.__create_pipe__(pipe_x)
-
-    def __create_pipe__(self, pipe_x: int) -> None:
-        allowed_range = self._game_configuration.window_height \
+    def create_pipe(self, pipe_x: int) -> None:
+        allowed_range = self._settings.window_height \
                         - self._min_pipe_height \
-                        - self._game_configuration.pipe_gap_height
+                        - self._settings.pipe_gap_height
         random_pos = random.randint(self._min_pipe_height, allowed_range)
-        top_height = self._game_configuration.window_height - (random_pos + self._game_configuration.pipe_gap_height)
-        top_pipe = self.__create_pipe_part__(pipe_x, 0, self._game_configuration.pipe_width, top_height,
+        top_height = self._settings.window_height - (random_pos + self._settings.pipe_gap_height)
+        top_pipe = self.__create_pipe_part__(pipe_x, 0, self._settings.pipe_width, top_height,
                                              PipeOrientation.Down)
-        bottom_pipe = self.__create_pipe_part__(pipe_x, self._game_configuration.window_height - random_pos,
-                                                self._game_configuration.pipe_width, random_pos, PipeOrientation.Up)
+        bottom_pipe = self.__create_pipe_part__(pipe_x, self._settings.window_height - random_pos,
+                                                self._settings.pipe_width, random_pos, PipeOrientation.Up)
         pipe_gap_rect = Rect(pipe_x, top_pipe.rect.bottom,
-                             self._game_configuration.pipe_width, self._game_configuration.pipe_gap_height)
+                             self._settings.pipe_width, self._settings.pipe_gap_height)
         pipe_gap = PipeGap(pipe_gap_rect)
 
         self._pipe_group.add(top_pipe)
@@ -69,13 +56,5 @@ class PipeGenerator:
 
     def __add_pipe_from_end__(self) -> None:
         last_pipe = self._pipe_group.sprites()[-1]
-        new_pipe_x = last_pipe.rect.x + self._game_configuration.pipe_width + self._game_configuration.pipe_distance
-        self.__create_pipe__(new_pipe_x)
-
-    def update(self) -> None:
-        # Add more pipes if there's space
-        # Each pipe actually has two parts, top and bottom
-        num_sprites_to_add = self._max_num_pipe_parts - len(self._pipe_group.sprites())
-        if num_sprites_to_add > 0:
-            for i in range(num_sprites_to_add):
-                self.__add_pipe_from_end__()
+        new_pipe_x = last_pipe.rect.x + self._settings.pipe_width + self._settings.pipe_distance
+        self.create_pipe(new_pipe_x)
